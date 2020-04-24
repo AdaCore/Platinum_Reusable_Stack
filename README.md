@@ -13,9 +13,10 @@ abstraction providing all the facilities required for production use.
 
 ## Source Files
 
-The main program declares objects of a type Stack able to contain character
-values. That Stack type is provided by the package Character_Stacks, which
-is an instantiation of a generic package defining a stack abstract data type.
+The proof demonstration main program declares objects of a type Stack able
+to contain character values (other types are, of course, possible). That
+Stack type is provided by the package Character_Stacks, which is an
+instantiation of a generic package defining a stack abstract data type.
 The instantiation is specified such that objects of the resulting Stack type
 can contain character values.
 
