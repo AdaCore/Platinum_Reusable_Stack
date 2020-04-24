@@ -46,26 +46,14 @@ project Stack_Dev is
    
    --  set main program
    case Adoption_Level is
-      when "None" =>
+      when "None" | "Stone" | "Bronze" | "Silver" =>
          for Main use ("demo_aorte.adb");
          
-      when "Stone" =>
-         for Main use ("demo_aorte.adb");
-         
-      when "Bronze" =>
-         for Main use ("demo_aorte.adb");
-         
-      when "Silver" =>
-         for Main use ("demo_aorte.adb");
-         
-      when "Gold" =>
-         for Main use ("demo_gold.adb");
-         
-      when "Platinum" =>
+      when "Gold" | "Platinum" =>
          for Main use ("demo_gold.adb");
    end case;
       
-   --  set mode switch
+   --  set GNATprove mode switch
    Mode_Switch := "";
    case Adoption_Level is
       when "None" =>
