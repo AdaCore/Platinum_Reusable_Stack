@@ -1,0 +1,91 @@
+project Stack_Dev is
+
+   for Languages use ("Ada");
+   for Exec_Dir use ".";
+   for Source_Dirs use ("source");
+   for Object_Dir use "objs";
+
+   package Compiler is
+      for Default_Switches ("ada") use
+        ("-gnatwa",    -- enable additional warnings
+         "-g",         -- enable debugging info, in case
+         "-gnato11",   -- enable overflow checks everywhere, which is also the default
+         "-gnata");    -- enable assertions
+   end Compiler;
+
+   package Builder is
+      for Switches ("ada") use ("-g");
+   end Builder;
+
+   type Adoption_Levels is ("None", "Stone", "Bronze", "Silver", "Gold", "Platinum");
+
+   Adoption_Level : Adoption_Levels := external ("Adoption_Level", "Platinum");
+   
+   --  select instantiation source file
+   package Naming is
+      case Adoption_Level is
+         when "None" =>
+            for Spec ("Character_Stacks") use "character_stacks-magma.ads";            
+
+         when "Stone" =>
+            for Spec ("Character_Stacks") use "character_stacks-stone.ads";
+
+         when "Bronze" =>
+            for Spec ("Character_Stacks") use "character_stacks-bronze.ads";
+
+         when "Silver" =>
+            for Spec ("Character_Stacks") use "character_stacks-silver.ads";
+
+         when "Gold" =>
+            for Spec ("Character_Stacks") use "character_stacks-gold.ads";
+
+         when "Platinum" =>
+            for Spec ("Character_Stacks") use "character_stacks-platinum.ads";
+      end case;
+   end Naming;
+   
+   --  set main program
+   case Adoption_Level is
+      when "None" =>
+         for Main use ("demo_aorte.adb");
+         
+      when "Stone" =>
+         for Main use ("demo_aorte.adb");
+         
+      when "Bronze" =>
+         for Main use ("demo_aorte.adb");
+         
+      when "Silver" =>
+         for Main use ("demo_aorte.adb");
+         
+      when "Gold" =>
+         for Main use ("demo_gold.adb");
+         
+      when "Platinum" =>
+         for Main use ("demo_gold.adb");
+   end case;
+      
+   --  set mode switch
+   Mode_Switch := "";
+   case Adoption_Level is
+      when "None" =>
+         Mode_Switch := "--mode=check";
+      
+      when "Stone" => 
+         Mode_Switch := "--mode=check_all";
+         
+      when "Bronze" =>  
+         Mode_Switch := "--mode=flow";
+
+      when "Silver" | "Gold" | "Platinum" =>
+         Mode_Switch := "--mode=all";
+   end case;     
+   
+   --  set prover switches
+   package Prove is
+      for Proof_Switches ("Ada") use 
+        ("--level=4") & Mode_Switch;
+   end Prove;  
+
+end Stack_Dev;
+
