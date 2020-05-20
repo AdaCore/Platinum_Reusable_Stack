@@ -20,7 +20,10 @@
 ------------------------------------------------------------------------------
 
 --  This is the ultimate version of the package, at the SPARK Platinum level.
---  You may want to rename the unit to Bounded_Sequential_Stacks.
+--  Rather than using the "_Platinum" suffix in the unit name, we use the
+--  unit name below because this is the final, production-ready version and,
+--  as such, should include the "Sequential" indicator too. The combination
+--  of that prefix and the SPARK adoption level suffix is just too long.
 
 generic
    type Element is private;
@@ -30,7 +33,7 @@ generic
    --  The default value used for stack contents. Never
    --  acquired as a value from the API, but required for
    --  initialization in SPARK.
-package Bounded_Stacks_Platinum is
+package Sequential_Bounded_Stacks is
 
    pragma Unevaluated_Use_of_Old (Allow);
 
@@ -166,4 +169,4 @@ private
         (for all K in 1 .. Invariant_Part.Top =>
             Within.Values (K) = Invariant_Part.Values (K)));
 
-end Bounded_Stacks_Platinum;
+end Sequential_Bounded_Stacks;
