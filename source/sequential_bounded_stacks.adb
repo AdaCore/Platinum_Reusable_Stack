@@ -19,7 +19,7 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
-package body Bounded_Stacks_Platinum is
+package body Sequential_Bounded_Stacks is
 
    -----------
    -- Reset --
@@ -61,4 +61,4 @@ package body Bounded_Stacks_Platinum is
       Destination.Values (Contained) := Source.Values (Contained);
    end Copy;
 
-end Bounded_Stacks_Platinum;
+end Sequential_Bounded_Stacks;
