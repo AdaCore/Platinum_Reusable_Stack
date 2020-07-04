@@ -19,37 +19,16 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
-package body Bounded_Stacks_Magma is
+package body Sequential_Bounded_Stacks is
 
    -----------
    -- Reset --
    -----------
 
-   procedure Reset (This : out Stack) is
+   procedure Reset (This : in out Stack) is
    begin
       This.Top := 0;
    end Reset;
-
-   ------------
-   -- Extent --
-   ------------
-
-   function Extent (This : Stack) return Natural is
-      (This.Top);
-
-   -----------
-   -- Empty --
-   -----------
-
-   function Empty (This : Stack) return Boolean is
-     (This.Top = 0);
-
-   ----------
-   -- Full --
-   ----------
-
-   function Full (This : Stack) return Boolean is
-     (This.Top = This.Capacity);
 
    ----------
    -- Push --
@@ -90,11 +69,11 @@ package body Bounded_Stacks_Magma is
    -- Copy --
    ----------
 
-   procedure Copy (Destination : out Stack; Source : Stack) is
+   procedure Copy (Destination : in out Stack; Source : Stack) is
       subtype Contained is Integer range 1 .. Source.Top;
    begin
       Destination.Top := Source.Top;
       Destination.Values (Contained) := Source.Values (Contained);
    end Copy;
 
-end Bounded_Stacks_Magma;
+end Sequential_Bounded_Stacks;

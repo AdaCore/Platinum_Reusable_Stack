@@ -21,9 +21,7 @@
 
 pragma Spark_Mode (On);
 
-with Ada.Characters.Latin_1;
-with Bounded_Stacks_Gold;
+with Sequential_Bounded_Stacks;
 
-package Character_Stacks is new Bounded_Stacks_Gold
-  (Element       => Character,
-   Default_Value => Ada.Characters.Latin_1.NUL);
+package Character_Stacks is new Sequential_Bounded_Stacks
+   (Element => Character);

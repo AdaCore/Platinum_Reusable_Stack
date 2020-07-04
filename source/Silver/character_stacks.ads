@@ -19,51 +19,11 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
-generic
-   type Element is private;
-package Bounded_Stacks_Stone is
+pragma Spark_Mode (On);
 
-   type Stack (Capacity : Positive) is private;
+with Ada.Characters.Latin_1;
+with Sequential_Bounded_Stacks;
 
-   procedure Push (This : in out Stack; Item : in Element) with
-     Pre => not Full (This);
-
-   procedure Pop (This : in out Stack; Item : out Element) with
-     Pre => not Empty (This);
-
-   function Top_Element (This : Stack) return Element with
-     Pre => not Empty (This);
-   --  Returns the value of the Element at the "top" of This
-   --  stack, i.e., the most recent Element pushed. Does not
-   --  remove that Element or alter the state of This stack
-   --  in any way.
-
-   overriding function "=" (Left, Right : Stack) return Boolean;
-
-   procedure Copy (Destination : out Stack; Source : Stack) with
-     Pre => Destination.Capacity >= Extent (Source);
-   --  An alternative to predefined assignment that does not
-   --  copy all the values unless necessary. It only copies
-   --  the part "logically" contained, so is more efficient
-   --  when Source is not full.
-
-   function Extent (This : Stack) return Natural;
-   --  Returns the number of Element values currently
-   --  contained within This stack.
-
-   function Empty (This : Stack) return Boolean;
-
-   function Full (This : Stack) return Boolean;
-
-   procedure Reset (This : out Stack);
-
-private
-
-   type Content is array (Positive range <>) of Element;
-
-   type Stack (Capacity : Positive) is record
-      Values : Content (1 .. Capacity);
-      Top    : Natural := 0;
-   end record;
-
-end Bounded_Stacks_Stone;
+package Character_Stacks is new Sequential_Bounded_Stacks
+  (Element       => Character,
+   Default_Value => Ada.Characters.Latin_1.NUL);

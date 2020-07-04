@@ -2,7 +2,6 @@ project Stack_Dev is
 
    for Languages use ("Ada");
    for Exec_Dir use ".";
-   for Source_Dirs use ("source");
    for Object_Dir use "objs";
 
    package Compiler is
@@ -20,30 +19,7 @@ project Stack_Dev is
    type Adoption_Levels is ("None", "Stone", "Bronze", "Silver", "Gold", "Platinum");
 
    Adoption_Level : Adoption_Levels := external ("Adoption_Level", "Platinum");
-   
-   --  select instantiation source file
-   package Naming is
-      case Adoption_Level is
-         when "None" =>
-            for Spec ("Character_Stacks") use "character_stacks-magma.ads";            
-
-         when "Stone" =>
-            for Spec ("Character_Stacks") use "character_stacks-stone.ads";
-
-         when "Bronze" =>
-            for Spec ("Character_Stacks") use "character_stacks-bronze.ads";
-
-         when "Silver" =>
-            for Spec ("Character_Stacks") use "character_stacks-silver.ads";
-
-         when "Gold" =>
-            for Spec ("Character_Stacks") use "character_stacks-gold.ads";
-
-         when "Platinum" =>
-            for Spec ("Character_Stacks") use "character_stacks-platinum.ads";
-      end case;
-   end Naming;
-   
+     
    --  set main program
    case Adoption_Level is
       when "None" | "Stone" | "Bronze" | "Silver" =>
@@ -52,6 +28,23 @@ project Stack_Dev is
       when "Gold" | "Platinum" =>
          for Main use ("demo_gold.adb");
    end case;
+
+   --  set source dirs 
+    --  for Source_Dirs use ("source/mains", "source/" & Adoption_Level);   
+   case Adoption_Level is
+      when "None" =>
+         for Source_Dirs use ("source/mains", "source/Ada");      
+      when "Stone" => 
+         for Source_Dirs use ("source/mains", "source/Stone");         
+      when "Bronze" =>  
+         for Source_Dirs use ("source/mains", "source/Bronze");
+      when "Silver" =>
+         for Source_Dirs use ("source/mains", "source/Silver");
+      when "Gold" =>
+         for Source_Dirs use ("source/mains", "source/Gold");
+      when "Platinum" =>
+         for Source_Dirs use ("source/mains", "source/Platinum");
+   end case;     
       
    --  set GNATprove mode switch
    Mode_Switch := "";
