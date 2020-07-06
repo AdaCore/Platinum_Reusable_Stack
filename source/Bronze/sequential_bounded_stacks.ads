@@ -19,6 +19,8 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
+--  This is the Bronze level version of the generic package
+
 generic
    type Element is private;
    --  The type of values contained by objects of type Stack
@@ -27,7 +29,7 @@ generic
    --  The default value used for stack contents. Never
    --  acquired as a value from the API, but required for
    --  initialization in SPARK.
-package Bounded_Stacks_Bronze is
+package Sequential_Bounded_Stacks is
 
    type Stack (Capacity : Positive) is private;
 
@@ -81,4 +83,4 @@ private
       Top    : Natural := 0;
    end record;
 
-end Bounded_Stacks_Bronze;
+end Sequential_Bounded_Stacks;

@@ -19,13 +19,13 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
---  This is the Ada version of the package, used as the starting point
+--  This is the Ada version of the generic package, used as the starting point
 --  for the transition to the SPARK Platinum level. It is below the SPARK
---  Stone level, hence the "_Magma" suffix in the unit name.
+--  Stone level.
 
 generic
    type Element is private;
-package Bounded_Stacks_Magma is
+package Sequential_Bounded_Stacks is
 
    type Stack (Capacity : Positive) is private;
 
@@ -74,4 +74,4 @@ private
       Top    : Natural := 0;
    end record;
 
-end Bounded_Stacks_Magma;
+end Sequential_Bounded_Stacks;

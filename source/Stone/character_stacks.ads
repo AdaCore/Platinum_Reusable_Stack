@@ -21,7 +21,7 @@
 
 pragma Spark_Mode (On);
 
-with Bounded_Stacks_Magma;
+with Sequential_Bounded_Stacks;
 
-package Character_Stacks is new Bounded_Stacks_Magma
-   (Element => Character);
+package Character_Stacks is new Sequential_Bounded_Stacks
+  (Element => Character);

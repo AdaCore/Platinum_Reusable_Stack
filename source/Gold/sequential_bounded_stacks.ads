@@ -19,6 +19,8 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
+--  This is the Gold level version of the generic package
+
 generic
    type Element is private;
    --  The type of values contained by objects of type Stack
@@ -27,7 +29,9 @@ generic
    --  The default value used for stack contents. Never
    --  acquired as a value from the API, but required for
    --  initialization in SPARK.
-package Bounded_Stacks_Silver is
+package Sequential_Bounded_Stacks is
+
+   pragma Unevaluated_Use_of_Old (Allow);
 
    subtype Element_Count is Integer range 0 .. Integer'Last - 1;
    --  The number of Element values currently contained
@@ -44,14 +48,20 @@ package Bounded_Stacks_Silver is
    type Stack (Capacity : Physical_Capacity) is private
       with Default_Initial_Condition => Empty (Stack);
 
-   procedure Push (This : in out Stack; Item : in Element) with
+   procedure Push (This : in out Stack;  Item : Element) with
      Pre    => not Full (This),
-     Post   => Extent (This) = Extent (This)'Old + 1,
+     Post   => not Empty (This)
+               and then Top_Element (This) = Item
+               and then Extent (This) = Extent (This)'Old + 1
+               and then Unchanged (This'Old, Within => This),
      Global => null;
 
-   procedure Pop (This : in out Stack; Item : out Element) with
+   procedure Pop (This : in out Stack;  Item : out Element) with
      Pre    => not Empty (This),
-     Post   => Extent (This) = Extent (This)'Old - 1,
+     Post   => not Full (This)
+               and Item = Top_Element (This)'Old
+               and Extent (This) = Extent (This)'Old - 1
+               and Unchanged (This, Within => This'Old),
      Global => null;
 
    function Top_Element (This : Stack) return Element with
@@ -63,10 +73,13 @@ package Bounded_Stacks_Silver is
    --  in any way.
 
    overriding function "=" (Left, Right : Stack) return Boolean with
+     Post   => "="'Result = (Extent (Left) = Extent (Right)
+                             and then Unchanged (Left, Right)),
      Global => null;
 
    procedure Copy (Destination : in out Stack; Source : Stack) with
      Pre    => Destination.Capacity >= Extent (Source),
+     Post   => Destination = Source,
      Global => null;
    --  An alternative to predefined assignment that does not
    --  copy all the values unless necessary. It only copies
@@ -79,13 +92,23 @@ package Bounded_Stacks_Silver is
    --  contained within This stack.
 
    function Empty (This : Stack) return Boolean with
+     Post   => Empty'Result = (Extent (This) = 0),
      Global => null;
 
    function Full (This : Stack) return Boolean with
+     Post   => Full'Result = (Extent (This) = This.Capacity),
      Global => null;
 
    procedure Reset (This : in out Stack) with
+     Post   => Empty (This),
      Global => null;
+
+   function Unchanged (Invariant_Part, Within : Stack) return Boolean
+     with Ghost;
+   --  Returns whether the Element values of Invariant_Part
+   --  are unchanged in the stack Within, e.g., that inserting
+   --  or removing an Element value does not change the other
+   --  Element values held.
 
 private
 
@@ -102,7 +125,7 @@ private
    ------------
 
    function Extent (This : Stack) return Element_Count is
-      (This.Top);
+     (This.Top);
 
    -----------
    -- Empty --
@@ -118,4 +141,28 @@ private
    function Full (This : Stack) return Boolean is
      (This.Top = This.Capacity);
 
-end Bounded_Stacks_Silver;
+   -----------------
+   -- Top_Element --
+   -----------------
+
+   function Top_Element (This : Stack) return Element is
+     (This.Values (This.Top));
+
+   ---------
+   -- "=" --
+   ---------
+
+   function "=" (Left, Right : Stack) return Boolean is
+     (Left.Top = Right.Top and then
+      Left.Values (1 .. Left.Top) = Right.Values (1 .. Right.Top));
+
+   ---------------
+   -- Unchanged --
+   ---------------
+
+   function Unchanged (Invariant_Part, Within : Stack) return Boolean is
+     (Invariant_Part.Top <= Within.Top and then
+        (for all K in 1 .. Invariant_Part.Top =>
+            Within.Values (K) = Invariant_Part.Values (K)));
+
+end Sequential_Bounded_Stacks;

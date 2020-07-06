@@ -19,6 +19,11 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
+--  This is the Platinum level implementation. This version is identical
+--  to the Gold level version except that, for illustration purposes, this
+--  version includes explicit data dependency contracts. You could use this
+--  as the ultimate version if you prefer.
+
 generic
    type Element is private;
    --  The type of values contained by objects of type Stack
@@ -27,7 +32,7 @@ generic
    --  The default value used for stack contents. Never
    --  acquired as a value from the API, but required for
    --  initialization in SPARK.
-package Bounded_Stacks_Gold is
+package Sequential_Bounded_Stacks is
 
    pragma Unevaluated_Use_of_Old (Allow);
 
@@ -37,7 +42,8 @@ package Bounded_Stacks_Gold is
    --  because a stack can be empty. We limit the upper
    --  bound (minimally) to preclude overflow issues.
 
-   subtype Physical_Capacity is Element_Count range 1 .. Element_Count'Last;
+   subtype Physical_Capacity is
+      Element_Count range 1 .. Element_Count'Last;
    --  The range of values that any given stack object can
    --  specify (via the discriminant) for the number of
    --  Element values the object can physically contain.
@@ -47,38 +53,42 @@ package Bounded_Stacks_Gold is
       with Default_Initial_Condition => Empty (Stack);
 
    procedure Push (This : in out Stack;  Item : Element) with
-     Pre    => not Full (This),
-     Post   => not Empty (This)
-               and then Top_Element (This) = Item
-               and then Extent (This) = Extent (This)'Old + 1
-               and then Unchanged (This'Old, Within => This),
-     Global => null;
+     Pre  => not Full (This),
+     Post => not Empty (This)
+             and then Top_Element (This) = Item
+             and then Extent (This) = Extent (This)'Old + 1
+             and then Unchanged (This'Old, Within => This),
+     Global  => null,
+     Depends => (This =>+ Item);
 
    procedure Pop (This : in out Stack;  Item : out Element) with
-     Pre    => not Empty (This),
-     Post   => not Full (This)
-               and Item = Top_Element (This)'Old
-               and Extent (This) = Extent (This)'Old - 1
-               and Unchanged (This, Within => This'Old),
-     Global => null;
+     Pre  => not Empty (This),
+     Post => not Full (This)
+             and Item = Top_Element (This)'Old
+             and Extent (This) = Extent (This)'Old - 1
+             and Unchanged (This, Within => This'Old),
+     Global  => null,
+     Depends => (This =>+ null, Item => This);
 
    function Top_Element (This : Stack) return Element with
-     Pre    => not Empty (This),
-     Global => null;
+     Pre     => not Empty (This),
+     Global  => null,
+     Depends => (Top_Element'Result => This);
    --  Returns the value of the Element at the "top" of This
    --  stack, i.e., the most recent Element pushed. Does not
    --  remove that Element or alter the state of This stack
    --  in any way.
 
    overriding function "=" (Left, Right : Stack) return Boolean with
-     Post   => "="'Result = (Extent (Left) = Extent (Right)
-                             and then Unchanged (Left, Right)),
+     Post => "="'Result = (Extent (Left) = Extent (Right)
+                           and then Unchanged (Left, Right)),
      Global => null;
 
    procedure Copy (Destination : in out Stack; Source : Stack) with
-     Pre    => Destination.Capacity >= Extent (Source),
-     Post   => Destination = Source,
-     Global => null;
+     Pre     => Destination.Capacity >= Extent (Source),
+     Post    => Destination = Source,
+     Global  => null,
+     Depends => (Destination =>+ Source);
    --  An alternative to predefined assignment that does not
    --  copy all the values unless necessary. It only copies
    --  the part "logically" contained, so is more efficient
@@ -98,8 +108,9 @@ package Bounded_Stacks_Gold is
      Global => null;
 
    procedure Reset (This : in out Stack) with
-     Post   => Empty (This),
-     Global => null;
+     Post    => Empty (This),
+     Global  => null,
+     Depends => (This =>+ null);
 
    function Unchanged (Invariant_Part, Within : Stack) return Boolean
      with Ghost;
@@ -163,4 +174,4 @@ private
         (for all K in 1 .. Invariant_Part.Top =>
             Within.Values (K) = Invariant_Part.Values (K)));
 
-end Bounded_Stacks_Gold;
+end Sequential_Bounded_Stacks;

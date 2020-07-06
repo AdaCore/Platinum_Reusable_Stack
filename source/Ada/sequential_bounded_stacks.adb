@@ -19,7 +19,7 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
-package body Bounded_Stacks_Stone is
+package body Sequential_Bounded_Stacks is
 
    -----------
    -- Reset --
@@ -97,4 +97,4 @@ package body Bounded_Stacks_Stone is
       Destination.Values (Contained) := Source.Values (Contained);
    end Copy;
 
-end Bounded_Stacks_Stone;
+end Sequential_Bounded_Stacks;

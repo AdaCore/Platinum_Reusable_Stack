@@ -33,25 +33,12 @@ straight when examining the code. Furthermore, we can apply the proof analyses
 to a conceptually common abstraction at arbitrary adoption levels without
 having to alter the code.
 
-In addition to the content differences required by the adoption levels, each
-generic package name reflects the corresponding level. We have generic package
-Bounded_Stacks_Stone for the Stone level, Bounded_Stacks_Gold for the Gold
-level, and so on. Therefore, although the instantiation is always named
-Character_Stacks, we have multiple generic packages available to declare the
-one instantiation used by the main procedure.
-
-There are also multiple files for the instantiations. Each instantiation is
-located within a dedicated source file corresponding to a given adoption level.
-The file names for these instances must be unique but are otherwise arbitrary.
-For the above, the file name is “character_stacks-stone.ads” because it is the
-instance of the Stone level generic. Only one of these instances can be used
-when GNATprove analyzes the code (or when building the executable). To select
-among them we use a “scenario variable” defined in the GNAT project file that
-has scenario values matching the adoption level names. In the IDE this scenario
-variable is presented with a pull-down menu so all we must do to work at a given
-level is select the adoption level name in the pull-down list. The project file
-then selects the instantiation file corresponding to the level, e.g.,
-“character_stacks-silver.ads” when the Silver level is selected.
+To select among the adoption levels we use a “scenario variable” defined in 
+the GNAT project file that has scenario values matching the adoption level 
+names. In the IDE this scenario variable is presented with a pull-down menu so 
+all we must do to work at a given level is select the adoption level name in the 
+pull-down list. The project file then selects the source directory and GNATprove 
+invocation switches corresponding to the level. 
 
 There are also multiple source files for the main program. Rather than have one
 file that must be edited as we prove the higher levels, we have two: one for all

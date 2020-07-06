@@ -19,46 +19,11 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 ------------------------------------------------------------------------------
 
-package body Bounded_Stacks_Gold is
+pragma Spark_Mode (On);
 
-   -----------
-   -- Reset --
-   -----------
+with Ada.Characters.Latin_1;
+with Sequential_Bounded_Stacks;
 
-   procedure Reset (This : in out Stack) is
-   begin
-      This.Top := 0;
-   end Reset;
-
-   ----------
-   -- Push --
-   ----------
-
-   procedure Push (This : in out Stack; Item : in Element) is
-   begin
-      This.Top := This.Top + 1;
-      This.Values (This.Top) := Item;
-   end Push;
-
-   ---------
-   -- Pop --
-   ---------
-
-   procedure Pop (This : in out Stack; Item : out Element) is
-   begin
-      Item := This.Values (This.Top);
-      This.Top := This.Top - 1;
-   end Pop;
-
-   ----------
-   -- Copy --
-   ----------
-
-   procedure Copy (Destination : in out Stack; Source : Stack) is
-      subtype Contained is Element_Count range 1 .. Source.Top;
-   begin
-      Destination.Top := Source.Top;
-      Destination.Values (Contained) := Source.Values (Contained);
-   end Copy;
-
-end Bounded_Stacks_Gold;
+package Character_Stacks is new Sequential_Bounded_Stacks
+  (Element       => Character,
+   Default_Value => Ada.Characters.Latin_1.NUL);
