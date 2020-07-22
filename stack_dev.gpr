@@ -2,7 +2,6 @@ project Stack_Dev is
 
    for Languages use ("Ada");
    for Exec_Dir use ".";
-   for Object_Dir use "objs";
 
    package Compiler is
       for Default_Switches ("ada") use
@@ -16,13 +15,15 @@ project Stack_Dev is
       for Switches ("ada") use ("-g");
    end Builder;
 
-   type Adoption_Levels is ("None", "Stone", "Bronze", "Silver", "Gold", "Platinum");
+   type Adoption_Levels is ("Ada", "Stone", "Bronze", "Silver", "Gold", "Platinum");
 
    Adoption_Level : Adoption_Levels := external ("Adoption_Level", "Platinum");
+
+   for Object_Dir use "objs/" & Adoption_Level;
      
    --  set main program
    case Adoption_Level is
-      when "None" | "Stone" | "Bronze" | "Silver" =>
+      when "Ada" | "Stone" | "Bronze" | "Silver" =>
          for Main use ("demo_aorte.adb");
          
       when "Gold" | "Platinum" =>
@@ -32,7 +33,7 @@ project Stack_Dev is
    --  set source dirs 
     --  for Source_Dirs use ("source/mains", "source/" & Adoption_Level);   
    case Adoption_Level is
-      when "None" =>
+      when "Ada" =>
          for Source_Dirs use ("source/mains", "source/Ada");      
       when "Stone" => 
          for Source_Dirs use ("source/mains", "source/Stone");         
@@ -49,7 +50,7 @@ project Stack_Dev is
    --  set GNATprove mode switch
    Mode_Switch := "";
    case Adoption_Level is
-      when "None" =>
+      when "Ada" =>
          Mode_Switch := "--mode=check";
       
       when "Stone" => 
