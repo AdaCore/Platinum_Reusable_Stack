@@ -29,7 +29,7 @@ package Sequential_Bounded_Stacks is
 
    type Stack (Capacity : Positive) is private;
 
-   procedure Push (This : in out Stack; Item : in Element) with
+   procedure Push (This : in out Stack; Item : Element) with
      Pre => not Full (This) or else raise Overflow;
 
    procedure Pop (This : in out Stack; Item : out Element) with
