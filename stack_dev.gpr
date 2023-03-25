@@ -20,24 +20,23 @@ project Stack_Dev is
    Adoption_Level : Adoption_Levels := external ("Adoption_Level", "Platinum");
 
    for Object_Dir use "objs/" & Adoption_Level;
-     
+
    --  set main program
    case Adoption_Level is
       when "Ada" | "Stone" | "Bronze" | "Silver" =>
          for Main use ("demo_aorte.adb");
-         
+
       when "Gold" | "Platinum" =>
          for Main use ("demo_gold.adb");
    end case;
 
-   --  set source dirs 
-    --  for Source_Dirs use ("source/mains", "source/" & Adoption_Level);   
+   --  set source dirs
    case Adoption_Level is
       when "Ada" =>
-         for Source_Dirs use ("source/mains", "source/Ada");      
-      when "Stone" => 
-         for Source_Dirs use ("source/mains", "source/Stone");         
-      when "Bronze" =>  
+         for Source_Dirs use ("source/mains", "source/Ada");
+      when "Stone" =>
+         for Source_Dirs use ("source/mains", "source/Stone");
+      when "Bronze" =>
          for Source_Dirs use ("source/mains", "source/Bronze");
       when "Silver" =>
          for Source_Dirs use ("source/mains", "source/Silver");
@@ -45,29 +44,29 @@ project Stack_Dev is
          for Source_Dirs use ("source/mains", "source/Gold");
       when "Platinum" =>
          for Source_Dirs use ("source/mains", "source/Platinum");
-   end case;     
-      
+   end case;
+
    --  set GNATprove mode switch
    Mode_Switch := "";
    case Adoption_Level is
       when "Ada" =>
          Mode_Switch := "--mode=check";
-      
-      when "Stone" => 
+
+      when "Stone" =>
          Mode_Switch := "--mode=check_all";
-         
-      when "Bronze" =>  
-         Mode_Switch := "--mode=flow";
+
+      when "Bronze" =>
+         Mode_Switch := "--mode=bronze";
 
       when "Silver" | "Gold" | "Platinum" =>
          Mode_Switch := "--mode=all";
-   end case;     
-   
+   end case;
+
    --  set prover switches
    package Prove is
-      for Proof_Switches ("Ada") use 
+      for Proof_Switches ("Ada") use
         ("--level=4") & Mode_Switch;
-   end Prove;  
+   end Prove;
 
 end Stack_Dev;
 
