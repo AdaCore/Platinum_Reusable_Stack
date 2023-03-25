@@ -1,22 +1,24 @@
 --
---  Copyright (C) 2020, AdaCore
+--  Copyright (C) 2023, AdaCore
 --
 --  SPDX-License-Identifier: Apache-2.0
 --
-
---  This is the Gold level version of the generic package
+--  Author: Patrick Rogers, rogers@adacore.com, progers@classwide.com
+--
 
 generic
+
    type Element is private;
    --  The type of values contained by objects of type Stack
 
    Default_Value : Element;
-   --  The default value used for stack contents. Never
-   --  acquired as a value from the API, but required for
-   --  initialization in SPARK.
+   --  The default value used for Stack contents. Used for initialization,
+   --  but never acquired as a value from the API (unless inserted by the
+   --  application).
+
 package Sequential_Bounded_Stacks is
 
-   pragma Unevaluated_Use_of_Old (Allow);
+   pragma Unevaluated_Use_Of_Old (Allow);
 
    subtype Element_Count is Integer range 0 .. Integer'Last - 1;
    --  The number of Element values currently contained
@@ -34,59 +36,63 @@ package Sequential_Bounded_Stacks is
       with Default_Initial_Condition => Empty (Stack);
 
    procedure Push (This : in out Stack;  Item : Element) with
-     Pre    => not Full (This),
-     Post   => not Empty (This)
-               and then Top_Element (This) = Item
-               and then Extent (This) = Extent (This)'Old + 1
-               and then Unchanged (This'Old, Within => This),
+     Pre  => not Full (This),
+     Post => not Empty (This)
+             and then Top_Element (This) = Item
+             and then Extent (This) = Extent (This)'Old + 1
+             and then Unchanged (This'Old, Within => This),
      Global => null;
 
    procedure Pop (This : in out Stack;  Item : out Element) with
-     Pre    => not Empty (This),
-     Post   => not Full (This)
-               and Item = Top_Element (This)'Old
-               and Extent (This) = Extent (This)'Old - 1
-               and Unchanged (This, Within => This'Old),
+     Pre  => not Empty (This),
+     Post => not Full (This)
+             and then Item = Top_Element (This)'Old
+             and then Extent (This) = Extent (This)'Old - 1
+             and then Unchanged (This, Within => This'Old),
      Global => null;
 
    function Top_Element (This : Stack) return Element with
      Pre    => not Empty (This),
-     Global => null;
+     Global => null,
+     Inline;
    --  Returns the value of the Element at the "top" of This
    --  stack, i.e., the most recent Element pushed. Does not
    --  remove that Element or alter the state of This stack
    --  in any way.
 
    overriding function "=" (Left, Right : Stack) return Boolean with
-     Post   => "="'Result = (Extent (Left) = Extent (Right)
-                             and then Unchanged (Left, Right)),
+     Post => "="'Result = (Extent (Left) = Extent (Right)
+             and then Unchanged (Left, Right)),
      Global => null;
 
    procedure Copy (Destination : in out Stack; Source : Stack) with
-     Pre    => Destination.Capacity >= Extent (Source),
-     Post   => Destination = Source,
+     Pre  => Destination.Capacity >= Extent (Source),
+     Post => Destination = Source,
      Global => null;
-   --  An alternative to predefined assignment that does not
-   --  copy all the values unless necessary. It only copies
-   --  the part "logically" contained, so is more efficient
-   --  when Source is not full.
+   --  An alternative to predefined assignment, in that it
+   --  does not copy all the array values unless necessary. It
+   --  only copies the slice "logically" contained, so is more
+   --  efficient when Source is not full.
 
    function Extent (This : Stack) return Element_Count with
-     Global => null;
+     Global => null,
+     Inline;
    --  Returns the number of Element values currently
    --  contained within This stack.
 
    function Empty (This : Stack) return Boolean with
-     Post   => Empty'Result = (Extent (This) = 0),
-     Global => null;
+     Post => Empty'Result = (Extent (This) = 0),
+     Global => null,
+     Inline;
 
    function Full (This : Stack) return Boolean with
-     Post   => Full'Result = (Extent (This) = This.Capacity),
-     Global => null;
+     Post => Full'Result = (Extent (This) = This.Capacity),
+     Global => null,
+     Inline;
 
    procedure Reset (This : in out Stack) with
-     Post   => Empty (This),
-     Global => null;
+     Post => Empty (This),
+     Global     => null;
 
    function Unchanged (Invariant_Part, Within : Stack) return Boolean
      with Ghost;
@@ -137,7 +143,7 @@ private
    -- "=" --
    ---------
 
-   function "=" (Left, Right : Stack) return Boolean is
+   overriding function "=" (Left, Right : Stack) return Boolean is
      (Left.Top = Right.Top and then
       Left.Values (1 .. Left.Top) = Right.Values (1 .. Right.Top));
 

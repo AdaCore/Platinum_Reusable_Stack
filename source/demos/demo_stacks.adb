@@ -1,15 +1,15 @@
 --
---  Copyright (C) 2020, AdaCore
+--  Copyright (C) 2023, AdaCore
 --
 --  SPDX-License-Identifier: Apache-2.0
 --
-
---  This is the test program used for the final two SPARK levels.
+--  Author: Patrick Rogers, rogers@adacore.com, progers@classwide.com
+--
 
 with Ada.Text_IO;       use Ada.Text_IO;
 with Character_Stacks;  use Character_Stacks;
 
-procedure Demo_Gold with SPARK_Mode is
+procedure Demo_Stacks with SPARK_Mode is
 
    S1, S2 : Stack (Capacity => 10);  -- arbitrary
 
@@ -45,4 +45,4 @@ begin
    pragma Assert (S1 /= S2);
 
    Put_Line ("Done");
-end Demo_Gold;
+end Demo_Stacks;

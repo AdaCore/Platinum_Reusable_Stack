@@ -1,0 +1,36 @@
+project Proven_Components is
+
+   type Main_Procedures is
+     ("demo_sets.adb",
+      "demo_queues.adb",
+      "demo_buffers.adb",
+      "demo_stacks.adb");
+
+   Main_Subprogram : Main_Procedures := External ("MAIN", "demo_sets.adb");
+
+   for Main use (Main_Subprogram);
+
+   for Exec_Dir use ".";
+   for Source_Dirs use ("source", "source/utils", "source/demos");
+   for Object_Dir use "obj";
+
+   package Compiler is
+      for Default_Switches ("Ada") use
+        ("-gnatwa",    -- enable additional warnings
+         "-gnatwJ",    -- DON'T COMPLAIN ABOUT PARENS IN AGGREGATES!
+         "-g",         -- enable debugging info, in case
+         "-gnato11",   -- enable overflow checks everywhere, which is also the default
+         "-gnata",     -- enable assertions
+         "-gnatf",     -- full errors
+         "-gnat2022");
+   end Compiler;
+
+   package Builder is
+      for Default_Switches ("Ada") use ("-g", "-k");
+   end Builder;
+   
+   package Pretty_Printer is
+      for Switches ("ada") use ("-nM", "--no-separate-loop-then", "-M120");
+   end Pretty_Printer;
+   
+end Proven_Components;
