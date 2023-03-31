@@ -40,7 +40,7 @@ package body Sequential_Bounded_Stacks is
    -- Push --
    ----------
 
-   procedure Push (This : in out Stack; Item : in Element) is
+   procedure Push (This : in out Stack; Item : Element) is
    begin
       This.Top := This.Top + 1;
       This.Values (This.Top) := Item;
